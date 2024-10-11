@@ -5,3 +5,10 @@
 
 
 https://pair-web-public.koyeb.app/
+
+
+
+*QUEEN THARU TEAM*
+OWNER BY CHAMINDU 
+CODE BY DIZER
+NAME BY NILTHARU
