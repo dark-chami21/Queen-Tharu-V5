@@ -23,33 +23,49 @@ menu[commands[i].category] += `.${commands[i].pattern}\n`;
  }
 }
 
-let madeMenu = `*HELLO ${pushname}*✨
+let madeMenu = `
 
-> *DOWNLOAD COMMANDS*⬇️
-
-${menu.download}
-
-> *MAIN COMMANDS*📜
-
-${menu.main}
-
-> *GROUP COMMANDS*👥
-
-${menu.group}
-
-> *OWNER COMMANDS*☣️
-
-${menu.owner}
-
-> *CONVERT COMMANDS*♻️
-
-${menu.convert}
-
-> *SEARCH COMMANDS*🔍
-
-${menu.search}
-
-🅿🅾🆆🆁🅳 🅱🆈 🅲🅷🅰🅼🅸 ❤️
+*HELLO ${p
+         u
+         s
+         h
+         n
+         a
+         m
+         e}*✨
+╰──────────●●►
+╭──────────●●►
+*│📜 MAIN COMMANDS*
+│   ───────
+╰───────────●●►
+╭───────────●●►
+*│⬇️ DOWNLOAD COMMANDS*
+│   ───────
+╰───────────●●►
+╭───────────●●►
+*│🔱 GROUP COMMANDS*
+│   ───────
+╰───────────●●►
+╭───────────●●►
+*│👨‍💻 OWNER COMMANDS*
+│   ───────
+╰───────────●●►
+╭───────────●●►
+*│🔗 CONVERT COMMANDS*
+│   ───────
+╰───────────●●►
+╭───────────●●►
+*│🤖 AI COMMANDS*
+│   ──────
+╰───────────●●►
+╭───────────●●►
+*│🫧 MATH COMMANDS*
+│   ───────
+╰───────────●●►
+╭───────────●●►
+*│🔍SEARCH COMMANDS*
+│   ───────
+╰───────────●●►
 `
 await conn.sendMessage(from,{image:{url:"https://i.ibb.co/YhYStZ8/IMG-20240923-WA0006.jpg"},caption:madeMenu},{quoted:mek})
 
