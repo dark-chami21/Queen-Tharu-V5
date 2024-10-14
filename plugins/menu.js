@@ -40,7 +40,7 @@ let madeMenu = `
 ╭───────────●●►
 *│🔱 GROUP COMMANDS*
 │   ───────
-   ${menu.group
+   ${menu.group}
 ╰───────────●●►
 ╭───────────●●►
 *│👨‍💻 OWNER COMMANDS*
@@ -57,6 +57,8 @@ let madeMenu = `
 │   ───────
   ${menu.search}
 ╰───────────●●►
+
+CODE BY CHAMINDU -QUEEN_THARU_V➄
 `
 await conn.sendMessage(from,{image:{url:"https://i.ibb.co/YhYStZ8/IMG-20240923-WA0006.jpg"},caption:madeMenu},{quoted:mek})
 
