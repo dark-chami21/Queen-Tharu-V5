@@ -30,7 +30,9 @@ const msg = `
 
 • *News* - ${news.result.desc}
 
-• *Link* - ${news.result.url}`
+• *Link* - ${news.result.url}
+
+ CODE BY CHAMINDU `
 
 
 await conn.sendMessage( from, { image: { url: news.result.image || '' }, caption: msg }, { quoted: mek })
@@ -64,7 +66,9 @@ const msg = `
 
 • *News* - ${news.result.desc}
 
-• *Link* - ${news.result.url} `
+• *Link* - ${news.result.url}
+
+ CODE BY CHAMINDU`
 
 
 await conn.sendMessage( from, { image: { url: news.result.image || '' }, caption: msg }, { quoted: mek })
@@ -100,7 +104,9 @@ const msg = `
 
 • *Date* - ${news.result.date}
 
-• *Link* - ${news.result.url} `
+• *Link* - ${news.result.url} 
+
+ CODE BY CHAMINDU`
 
 
 await conn.sendMessage( from, { image: { url: news.result.image || '' }, caption: msg }, { quoted: mek })
