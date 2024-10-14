@@ -1,46 +1,58 @@
-const {cmd , commands} = require('../command')
-const fg = require(`api-dylux`)
-const yts = require(`yt-search`)
-cmd({
-    pattern: "song",
-    desc: "download songs",
-    category: "main",
-    filename: __filename
-},
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
-if(!q) return reply("please give me url")
-const search =await yts(q)
-const data = search.videos[0];
-const url = data.url
+import axios from'axios';
 
-let desc = `
-*QUEEN THARU SONG DOWNLOADER 🎵⬇️*
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+    if (!text) throw `Contoh penggunaan: ${usedPrefix + command} <query>`;
 
-title: ${data.title}
-description: ${data.description}
-time: ${data.timestamp}
-ago: ${data.ago}
-views: ${data.views}
+    const searchQuery = text.trim();
+    try {
+        await conn.sendMessage(m.chat, { react: { text: '🕒', key: m.key }});
 
-*MADE BY CHAMI*
-`
-await conn.sendMessage(from,{image:{url: data.thumbnail},caption:desc},{quoted:mek});
+        const { data } = await axios.get(`https://apisku-furina.vercel.app/api/downloader/play?q=${searchQuery}&apikey=indradev`);
 
-//download auodio=========================
+        if (!data.status) throw new Error('Video not found or an error occurred.');
 
-let down = await fg.yta(url)
-let downloadUrl = down.dl_url
+        const audioData = data.result;
 
-//send auodio message=====================
-await conn.sendMessage(from,{audio: {url:downloadUrl},mimetype:"audio/mpeg"},{quoted:mek})
-await conn.sendMessage(from,{document: {url:downloadUrl},mimetype:"audio/mpeg",fileName:data.title + ".mp3",caption:"*MADE BY CHAMI*"},{quoted:mek})
+        const detailMessage = `「 *Detail Video* 」\n\n` +
+            `📝 *Title:* ${audioData.title}\n` +
+            `🎶 *Quality:* 128kbps\n` +
+            `🎦 *Durasi:* ${audioData.duration}\n` +
+            `👤 *Author:* ${audioData.name}`;
 
-}catch(e){
-console.log(e)
-reply(`${e}`)
+        await conn.sendMessage(m.chat, {
+            text: detailMessage,
+            contextInfo: {
+                externalAdReply: {
+                    title: audioData.title,
+                    body: audioData.description || 'Click here for more details',
+                    thumbnailUrl: audioData.thumbnail,
+                    sourceUrl: audioData.url,
+                    mediaType: 1,
+                    renderLargerThumbnail: true
+                }
+            }
+        });
+
+        await conn.sendMessage(m.chat, {
+            audio: { url: audioData.mp3 },
+            mimetype: 'audio/mp4'
+        }, { quoted: m });
+
+    } catch (e) {
+        console.error(e);
+        if (e.message.includes('Video not found')) {
+            throw '❌ Gagal mendownload audio!';
+        } else {
+            conn.reply(m.chat, 'An error occurred: ' + e.message, m);
+        }
+    }
 }
-})
+
+handler.help = ["play"];
+handler.tags = ["music"];
+handler.command = /^play$/i;
+
+export default handler
 
 //==============================video-dl========================================
 
