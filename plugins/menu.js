@@ -37,34 +37,32 @@ let madeMenu = `
 ╭──────────●●►
 *│📜 MAIN COMMANDS*
 │   ───────
+   ${menu.main}
 ╰───────────●●►
 ╭───────────●●►
 *│⬇️ DOWNLOAD COMMANDS*
 │   ───────
+   ${menu.download}
 ╰───────────●●►
 ╭───────────●●►
 *│🔱 GROUP COMMANDS*
 │   ───────
+   ${menu.group
 ╰───────────●●►
 ╭───────────●●►
 *│👨‍💻 OWNER COMMANDS*
 │   ───────
+   ${menu.owner}
 ╰───────────●●►
 ╭───────────●●►
 *│🔗 CONVERT COMMANDS*
 │   ───────
-╰───────────●●►
-╭───────────●●►
-*│🤖 AI COMMANDS*
-│   ──────
-╰───────────●●►
-╭───────────●●►
-*│🫧 MATH COMMANDS*
-│   ───────
+  ${menu.convert}
 ╰───────────●●►
 ╭───────────●●►
 *│🔍SEARCH COMMANDS*
 │   ───────
+  ${menu.search}
 ╰───────────●●►
 `
 await conn.sendMessage(from,{image:{url:"https://i.ibb.co/YhYStZ8/IMG-20240923-WA0006.jpg"},caption:madeMenu},{quoted:mek})
