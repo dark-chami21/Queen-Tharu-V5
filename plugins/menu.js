@@ -25,14 +25,7 @@ menu[commands[i].category] += `.${commands[i].pattern}\n`;
 
 let madeMenu = `
 
-*HELLO ${p
-         u
-         s
-         h
-         n
-         a
-         m
-         e}*✨
+*HELLO ${pushname}*✨
 ╰──────────●●►
 ╭──────────●●►
 *│📜 MAIN COMMANDS*
