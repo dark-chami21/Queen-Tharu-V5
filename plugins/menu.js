@@ -3,6 +3,7 @@ const {cmd , commands} = require('../command')
 
 cmd({
     pattern: "menu",
+    react: "📄",
     desc: "cmd list",
     category: "main",
     filename: __filename
@@ -35,7 +36,11 @@ let madeMenu = `
 ╭───────────●●►
 *│⬇️ DOWNLOAD COMMANDS*
 │   ───────
-   ${menu.download}
+   .song
+   .video 
+   .tiktok
+   .fb
+   .tiktok2
 ╰───────────●●►
 ╭───────────●●►
 *│🔱 GROUP COMMANDS*
@@ -45,7 +50,7 @@ let madeMenu = `
 ╭───────────●●►
 *│👨‍💻 OWNER COMMANDS*
 │   ───────
-   ${menu.owner}
+   .restart
 ╰───────────●●►
 ╭───────────●●►
 *│🔗 CONVERT COMMANDS*
@@ -55,7 +60,15 @@ let madeMenu = `
 ╭───────────●●►
 *│🔍SEARCH COMMANDS*
 │   ───────
-  ${menu.search}
+  .getinfo
+╰───────────●●►
+╭───────────●●►
+*│NEWS COMMAND*
+│   ───────
+  .hiru
+  .sirasa
+  .derana
+  .technews
 ╰───────────●●►
 
 CODE BY CHAMINDU -QUEEN_THARU_V➄
