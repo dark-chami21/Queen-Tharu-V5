@@ -45,6 +45,6 @@ full info : ${data.desc}
 
         } catch (e) {
             console.log(e)
-            //reply(`${e}`)
+            reply(`${e}`)
         }
     })
