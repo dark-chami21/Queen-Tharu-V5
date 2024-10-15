@@ -11,6 +11,7 @@
   "dependencies": {
     "@adiwajshing/keyed-db": "^0.2.4",
     "@mrnima/facebook-downloader": "^1.0.0",
+    "@mrnima/technology_news_info": "^1.0.0",
     "@mrnima/tiktok-downloader": "^1.0.0",
     "@mrnima/wabetainfo": "^1.0.1",
     "@whiskeysockets/baileys": "6.6.0",

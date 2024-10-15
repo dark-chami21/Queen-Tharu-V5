@@ -16,32 +16,29 @@ DON'T REMOVE CREDITS !
 
 
 const command = require("../command");
-const nimaWabetaInfo = require("@mrnima/wabetainfo")
+const nima = require("@mrnima/technology_news_info")
 
 
 command.cmd({
-    pattern: "getinfo",
+    pattern: "technews",
     desc: "Wabetainfo link info get.",
     category: "download"
 },
     async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
     try {
-            if (!q) return reply("please give me wabetainfo search result link.");
             await reply("```Fetching ...```")
-            var result = await nimaWabetaInfo.getFromLink(q);
+            var result = await nima.latest_news();
             const data = result.result;
-         let desc = `
-*QUEEN THARU WABETAINFO*
+            let desc = `
+*QUEEN THARU TECHNOLOGY NEWS*
             
 title: ${data.title}
-date : ${data.date}
-description: ${data.short_desc}
 
-full info : ${data.desc}
+description: ${data.desc}
             
 *MADE BY CHAMI*
             `
-            await conn.sendMessage(from, { image: { url: data.image || "https://avatars.githubusercontent.com/u/108072422?v=4"}, caption: desc }, { quoted: mek });
+            await conn.sendMessage(from, { image: { url: data.img.split("?")[0] || "https://avatars.githubusercontent.com/u/108072422?v=4"}, caption: desc }, { quoted: mek });
 
         } catch (e) {
             console.log(e)
