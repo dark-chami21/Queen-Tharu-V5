@@ -37,10 +37,19 @@ let madeMenu = `
 *│⬇️ DOWNLOAD COMMANDS*
 │   ───────
    .song
+   ex'.song lelena'
+   ==================
    .video 
+   ex'.video lelena'
+   ==================
    .tiktok
+   ex'.tiktok https://vt.tiktok.com/ZS2wwV9nA/'
+   ==================
    .fb
-   .tiktok2
+   ex'.fb https://www.facebook.com/share/v/Lk2JXBgiYxPNjqm3/'
+   ==================  
+  .tiktok2
+   ex'.tiktok https://vt.tiktok.com/ZS2wwV9nA/'
 ╰───────────●●►
 ╭───────────●●►
 *│🔱 GROUP COMMANDS*
@@ -61,6 +70,7 @@ let madeMenu = `
 *│🔍SEARCH COMMANDS*
 │   ───────
   .getinfo
+  .wabeta
 ╰───────────●●►
 ╭───────────●●►
 *│🌐 NEWS COMMAND*
