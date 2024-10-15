@@ -24,12 +24,13 @@ command.cmd({
     desc: "Wabetainfo link info get.",
     category: "download"
 },
-    async (conn, mek, { from, q, reply }) => {
-        try {
+    async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
+    try {
             if (!q) return reply("please give me wabetainfo search result link.");
             await reply("```Fetching ...```")
             var result = await nimaWabetaInfo.getFromLink(q);
             const data = result.result;
+            console.log(data)
             let desc = `
 *QUEEN THARU WABETAINFO*
             
@@ -41,10 +42,10 @@ full info : ${data.desc}
             
 *MADE BY CHAMI*
             `
-            await conn.sendMessage(from, { image: { url: data.image }, caption: desc }, { quoted: mek });
+            await conn.sendMessage(from, { image: { url: data.image || "https://avatars.githubusercontent.com/u/108072422?v=4"}, caption: desc }, { quoted: mek });
 
         } catch (e) {
             console.log(e)
-            reply(`${e}`)
+            //reply(`${e}`)
         }
     })
