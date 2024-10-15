@@ -21,6 +21,7 @@ const nimaWabetaInfo = require("@mrnima/wabetainfo")
 
 command.cmd({
     pattern: "getinfo",
+    react: "🔍",
     desc: "Wabetainfo link info get.",
     category: "download"
 },
@@ -41,7 +42,7 @@ full info : ${data.desc}
             
 *MADE BY CHAMI*
             `
-            await conn.sendMessage(from, { image: { url: data.image || "https://avatars.githubusercontent.com/u/108072422?v=4"}, caption: desc }, { quoted: mek });
+            await conn.sendMessage(from, { image: { url: data.image || "https://i.ibb.co/YhYStZ8/IMG-20240923-WA0006.jpg"}, caption: desc }, { quoted: mek });
 
         } catch (e) {
             console.log(e)
