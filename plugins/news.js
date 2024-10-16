@@ -108,8 +108,16 @@ const msg = `
 
  CODE BY CHAMINDU`
 
+    
 
-// NEW ADDED NEWS SITE [ BBC , LANKADEEPA ]
+await conn.sendMessage( from, { image: { url: news.result.image || '' }, caption: msg }, { quoted: mek })
+} catch (e) {
+console.log(e)
+reply(e)
+}
+})
+
+
 
 const config = require('../config')
 const { cmd } = require('../command')
