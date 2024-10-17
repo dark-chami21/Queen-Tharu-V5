@@ -87,6 +87,7 @@ let madeMenu = `
 │   ───────
   .hack
   .dog
+  .fact
 ╰───────────●●►
 
 *CODE BY CHAMINDU*
