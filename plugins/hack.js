@@ -1,39 +1,50 @@
-const { cmd, commands } = require('../command');
+const { cmd } = require('../command');
 
 cmd({
     pattern: "hack",
-    desc: "Prank hack simulation.",
+    desc: "Displays a dynamic and playful 'Hacking' message for fun.",
     category: "fun",
+    react: "💻",
     filename: __filename
 },
-async (conn, mek, m, { from, quoted, reply }) => {
+async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply }) => {
     try {
-        // Start the fake hacking message
-        let message = await conn.sendMessage(from, { text: `💻 Initiating hack...` }, { quoted: mek });
+        const steps = [
+            '💻 *HACK STARTING...* 💻',
+            '',
+            '*Initializing hacking tools...* 🛠️',
+            '*Connecting to remote servers...* 🌐',
+            '',
+            '```[██████████] 10%``` ⏳'                                            ,
+            '```[███████████████████] 20%``` ⏳'                                   ,
+            '```[███████████████████████] 30%``` ⏳'                               ,
+            '```[██████████████████████████] 40%``` ⏳'                            ,
+            '```[███████████████████████████████] 50%``` ⏳'                       ,
+            '```[█████████████████████████████████████] 60%``` ⏳'                 ,
+            '```[██████████████████████████████████████████] 70%``` ⏳'            ,
+            '```[██████████████████████████████████████████████] 80%``` ⏳'        ,
+            '```[██████████████████████████████████████████████████] 90%``` ⏳'    ,
+            '```[████████████████████████████████████████████████████] 100%``` ✅',
+            '',
+            '🔒 *System Breach: Successful!* 🔓',
+            '📟 *Command Execution: Complete!* ⌛',
+            '',
+            '*📡 Transmitting data...* 📤',
+            '_🕵️‍♂️ Ensuring stealth..._ 🤫',
+            '*🔧 Finalizing operations...* 🏁',
+            '',
+            '⚠️ *Note:* All actions are for demonstration purposes only.',
+            '⚠️ *Reminder:* Ethical hacking is the only way to ensure security.',
+            '',
+            '> *©𝐏𝐎𝐖𝐄𝐑𝐄𝐃 𝐁𝐘 𝙲𝙷𝙰𝙼𝙸𝙽𝙳𝚄 - QUEEN_THARU_V➄*'
+        ];
 
-        // Simulate step-by-step hacking process
-        setTimeout(async () => {
-            await conn.updateMessage(from, message.key, { text: `🔍 Bypassing firewall...` });
-        }, 2000);
-
-        setTimeout(async () => {
-            await conn.updateMessage(from, message.key, { text: `🔑 Cracking passwords...` });
-        }, 4000);
-
-        setTimeout(async () => {
-            await conn.updateMessage(from, message.key, { text: `📂 Accessing personal data...` });
-        }, 6000);
-
-        setTimeout(async () => {
-            await conn.updateMessage(from, message.key, { text: `📝 Downloading sensitive files...` });
-        }, 8000);
-
-        setTimeout(async () => {
-            await conn.updateMessage(from, message.key, { text: `✅ Hack completed successfully!\n😂 Just kidding, it's a prank!` });
-        }, 10000);
-        
+        for (const line of steps) {
+            await conn.sendMessage(from, { text: line }, { quoted: mek });
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Adjust the delay as needed
+        }
     } catch (e) {
         console.log(e);
-        reply(`${e}`);
+        reply(`❌ *Error!* ${e.message}`);
     }
 });
