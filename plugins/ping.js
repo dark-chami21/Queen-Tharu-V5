@@ -1,30 +1,19 @@
-const config = require('../config');
-const { cmd, commands } = require('../command');
+import config from '../../config.cjs';
 
-cmd({
-    pattern: "ping",
-    desc: "Check bot response time.",
-    category: "main",
-    filename: __filename
-},
-async (conn, mek, m, { from, quoted, reply }) => {
-    try {
-        const start = Date.now();
-        
-        let message = await conn.sendMessage(from, {
-            text: `🏓 *Pinging...*`
-        }, { quoted: mek });
-        
-        const end = Date.now();
-        const ping = end - start;
-        
-        
-        await conn.updateMessage(from, message.key, {
-            text: `🏓 *Pong!*\n📡 Response time: *${ping}ms* 🕒`
-        });
+const ping = async (m, sock) => {
+  const prefix = config.PREFIX;
+const cmd = m.body.startsWith(prefix) ? m.body.slice(prefix.length).split(' ')[0].toLowerCase() : '';
+const text = m.body.slice(prefix.length + cmd.length).trim();
 
-    } catch (e) {
-        console.log(e);
-        reply(`${e}`);
-    }
-});
+  if (cmd === "ping") {
+    const start = new Date().getTime();
+    await m.React('⤵️');
+    const end = new Date().getTime();
+    const responseTime = (end - start) / 1000;
+
+    const text = `🥀᪳QUEEN THARU V➄: ${responseTime.toFixed(2)} s_*`;
+    sock.sendMessage(m.from, { text }, { quoted: m });
+  }
+}
+
+export default ping;
