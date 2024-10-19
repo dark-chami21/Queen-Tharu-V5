@@ -37,11 +37,7 @@ let about = ` *👋 Hello ${pushname}*
 return await conn.sendMessage(from,{image: {url:`https://i.imgur.com/wZj8PVg.jpeg},caption:about},{quoted: mek})
 
 }catch(e){
-
 console.log(e)
-
 reply(`${e}`)
-
 }
-
 })
