@@ -1,10 +1,11 @@
+const { cmd } = require('../command'); 
 const ytdl = require('ytdl-core');
 const axios = require('axios');
 
 // YouTube API Key
 const API_KEY = 'AIzaSyDKw73E4AHZKcXrTod6wFHKpF73P1v4e6I';
 
-// Function to get video details using YouTube Data API v3
+// Function to get YouTube video details using YouTube Data API v3
 async function getYouTubeVideoDetails(query) {
     const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${API_KEY}&type=video&maxResults=1`;
 
