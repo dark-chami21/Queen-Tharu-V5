@@ -3,7 +3,7 @@ const ytdl = require('ytdl-core');
 const axios = require('axios');
 
 // YouTube API Key
-const API_KEY = 'AIzaSyDKw73E4AHZKcXrTod6wFHKpF73P1v4e6I';
+const API_KEY = 'https://api-pink-venom.vercel.app/api/ytdl?url=$';
 
 // Function to get YouTube video details using YouTube Data API v3
 async function getYouTubeVideoDetails(query) {
