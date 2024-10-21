@@ -1,101 +1,93 @@
-const {cmd , commands} = require('../command')
-const fg = require('api-dylux')
-const yts = require('yt-search')
+const ytdl = require('ytdl-core');
+const axios = require('axios');
 
+// YouTube API Key
+const API_KEY = 'AIzaSyDKw73E4AHZKcXrTod6wFHKpF73P1v4e6I';
+
+// Function to get video details using YouTube Data API v3
+async function getYouTubeVideoDetails(query) {
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&key=${API_KEY}&type=video&maxResults=1`;
+
+    try {
+        const response = await axios.get(url);
+        const video = response.data.items[0];
+
+        if (video) {
+            const videoId = video.id.videoId;
+            const videoDetails = {
+                title: video.snippet.title,
+                description: video.snippet.description,
+                thumbnail: video.snippet.thumbnails.high.url,
+                videoUrl: `https://www.youtube.com/watch?v=${videoId}`,
+            };
+            return videoDetails;
+        } else {
+            throw new Error("No video found");
+        }
+    } catch (error) {
+        console.error("Error fetching video details: ", error);
+        throw error;
+    }
+}
+
+// Command for downloading a song (audio)
 cmd({
     pattern: "song",
     react: "🎵",
-    desc: "downlod song",
-    category: "downlod",
+    desc: "Download song",
+    category: "download",
     filename: __filename
-},
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
+}, async (conn, mek, m, { from, quoted, q, reply }) => {
+    try {
+        if (!q) return reply("*❌ Please provide a URL or title*");
 
-if(!q) return reply("*❌Please give me url or titel*")
-const search = await yts(q)
-const deta = search.videos[0];
-const url = deta.url 
+        const videoDetails = await getYouTubeVideoDetails(q);
 
-let desc= `
- *🎶THARU-𝗠𝗗   𝗔𝗨𝗗𝗜𝗢-𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥🎶*
-|__________________________
-| ℹ️ *title* : *${deta.title}*
-| 📋 *description* : *${deta.description}*
-| 🕘 *time* : *${deta.timestamp}*
-| 📌 *ago* : *${deta.ago}*
-| 📉 *views* : *${deta.views}*
-|__________________________
+        let desc = `
+         *🎶 Audio Downloader 🎶*
+        | Title: ${videoDetails.title}
+        | Description: ${videoDetails.description}
+        `;
 
-*©ᴘᴏᴡᴇʀᴅ ʙʏ ꜱᴇɴᴜʟ-ᴍᴅ*
+        await conn.sendMessage(from, { image: { url: videoDetails.thumbnail }, caption: desc }, { quoted: mek });
 
-`
+        // Download audio using ytdl-core
+        const audioStream = ytdl(videoDetails.videoUrl, { filter: 'audioonly' });
+        await conn.sendMessage(from, { audio: { stream: audioStream }, mimetype: "audio/mpeg", fileName: videoDetails.title + ".mp3" }, { quoted: mek });
 
-await conn.sendMessage(from,{image :{ url: deta.thumbnail},caption:desc},{quoted:mek});
+    } catch (e) {
+        console.log(e);
+        reply(`${e}`);
+    }
+});
 
-//downlod audio+ document
-
-let down = await fg.yta(url)
-let downloadUrl = down.dl_url
-
-//send audio message 
-await conn.sendMessage(from,{audio:{url:downloadUrl},mimetype:"audio/mpeg",caption :"*©ᴘᴏᴡᴇʀᴇᴅ *"},{quoted:mek})
-await conn.sendMessage(from,{document:{url:downloadUrl},mimetype:"audio/mpeg",fileName:deta.title + ".mp3" ,caption :"*©ᴘᴏᴡᴇʀᴇᴅ*"},{quoted:mek})
-
-  
-
-}catch(e){
-console.log(e)
-reply(`${e}`)
-}
-})
-
-//========video dl=======
-
+// Command for downloading a video
 cmd({
     pattern: "video",
     react: "🎥",
-    desc: "downlod video",
-    category: "downlod",
+    desc: "Download video",
+    category: "download",
     filename: __filename
-},
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
+}, async (conn, mek, m, { from, quoted, q, reply }) => {
+    try {
+        if (!q) return reply("*❌ Please provide a URL or title*");
 
-if(!q) return reply("❌Please give me url or title")
-const search = await yts(q)
-const deta = search.videos[0];
-const url = deta.url 
+        const videoDetails = await getYouTubeVideoDetails(q);
 
-let desc= `
-*📽️THARU-𝗠𝗗   𝗩𝗜𝗗𝗘𝗢-𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥📽️*
-|__________________________
-| ℹ️ *title* : *${deta.title}*
-| 📋 *description* : *${deta.description}*
-| 🕘 *time* : *${deta.timestamp}*
-| 📌 *ago* : *${deta.ago}*
-| 📉 *views* : *${deta.views}*
-|__________________________
+        let desc = `
+         *📽️ Video Downloader 📽️*
+        | Title: ${videoDetails.title}
+        | Description: ${videoDetails.description}
+        `;
 
-*©ᴘᴏᴡᴇʀᴅ ʙʏ ꜱᴇɴᴜʟ-ᴍᴅ*
+        await conn.sendMessage(from, { image: { url: videoDetails.thumbnail }, caption: desc }, { quoted: mek });
 
-`
+        // Download video using ytdl-core
+        const videoStream = ytdl(videoDetails.videoUrl, { filter: 'videoandaudio' });
+        await conn.sendMessage(from, { video: { stream: videoStream }, mimetype: "video/mp4", fileName: videoDetails.title + ".mp4" }, { quoted: mek });
 
-await conn.sendMessage(from,{image :{ url: deta.thumbnail},caption:desc},{quoted:mek});
-
-//downlod video + document 
-
-let down = await fg.ytv(url)
-let downloadUrl = down.dl_url
-
-//send video  message 
-await conn.sendMessage(from,{video:{url:downloadUrl},mimetype:"video/mp4",caption :"*©ᴘᴏᴡᴇʀᴇᴅ *"},{quoted:mek})
-await conn.sendMessage(from,{document:{url:downloadUrl},mimetype:"video/mp4",fileName:deta.title + ".mp4",caption :"*©ᴘᴏᴡᴇʀᴇᴅ *"},{quoted:mek})
-
-  
-
-}catch(e){
-console.log(e)
-reply(`${e}`)
-}
-})
+    } catch (e) {
+        console.log(e);
+        reply(`${e}`);
+    }
+});
