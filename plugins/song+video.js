@@ -31,11 +31,13 @@ async (conn, mek, m, { from, quoted, q, reply }) => {
         await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
 
         // Download audio using ytdl-core
-        const stream = ytdl(url, { filter: 'audioonly' });
+        const audioStream = ytdl(url, { filter: 'audioonly' });
 
-        // Send audio + document message
-        await conn.sendMessage(from, { audio: { url: stream }, mimetype: "audio/mpeg", caption: `> _*POWERED BY DIZER*_ 🎧` }, { quoted: mek });
-        await conn.sendMessage(from, { document: { url: stream }, mimetype: "audio/mpeg", fileName: `${data.title}.mp3`, caption: `🎵 _*DIZER AUDIO DOWNLOAD...*_` }, { quoted: mek });
+        // Send audio message
+        await conn.sendMessage(from, { audio: { url: audioStream }, mimetype: "audio/mpeg", caption: `> _*POWERED BY DIZER*_ 🎧` }, { quoted: mek });
+
+        // Send document message with the audio
+        await conn.sendMessage(from, { document: audioStream, mimetype: "audio/mpeg", fileName: `${data.title}.mp3`, caption: `🎵 _*DIZER AUDIO DOWNLOAD...*_` }, { quoted: mek });
 
     } catch (e) {
         console.error(e);
@@ -72,11 +74,13 @@ async (conn, mek, m, { from, quoted, q, reply }) => {
         await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
 
         // Download video using ytdl-core
-        const stream = ytdl(url);
+        const videoStream = ytdl(url);
 
-        // Send video + document message
-        await conn.sendMessage(from, { video: { url: stream }, mimetype: "video/mp4", caption: `> _*POWERED BY DIZER*_ 🎥` }, { quoted: mek });
-        await conn.sendMessage(from, { document: { url: stream }, mimetype: "video/mp4", fileName: `${data.title}.mp4`, caption: `🎬 _*DIZER VIDEO DOWNLOAD...*_` }, { quoted: mek });
+        // Send video message
+        await conn.sendMessage(from, { video: videoStream, mimetype: "video/mp4", caption: `> _*POWERED BY DIZER*_ 🎥` }, { quoted: mek });
+
+        // Send document message with the video
+        await conn.sendMessage(from, { document: videoStream, mimetype: "video/mp4", fileName: `${data.title}.mp4`, caption: `🎬 _*DIZER VIDEO DOWNLOAD...*_` }, { quoted: mek });
 
     } catch (e) {
         console.error(e);
