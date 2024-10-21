@@ -29,6 +29,7 @@
     "util": "^0.12.4",
     "vm": "^0.1.0",
     "yt-search": "2.12.1",
+    "@bochilteam/scraper": "^5.0.1",
     "ytdl-core": "^4.9.1"  
   }
 }
