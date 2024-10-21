@@ -1,118 +1,101 @@
-const config = require('../config')
-const fetch = require('node-fetch')
-const {
-    getBuffer,
-    getGroupAdmins,
-    getRandom,
-    getsize,
-    h2k,
-    isUrl,
-    Json,
-    runtime,
-    sleep,
-    fetchJson
-} = require('../lib/functions')
-const {
-    cmd,
-    commands
-} = require('../command')
+const {cmd , commands} = require('../command')
+const fg = require('api-dylux')
+const yts = require('yt-search')
 
-let foot = config.FOOTER
-
-async function dlyta(url, type) {
-    try {
-        const maxAttempts = 10;
-
-        for (let attempt = 0; attempt < maxAttempts; attempt++) {
-            const response = await fetch(`https://api-pink-venom.vercel.app/api/ytdl?url=${url}&type=${type}`);
-            const result = await response.json();
-
-            if (result.result.download_url) {
-                return {
-                    status: true,
-                    dl_link: result.result.download_url
-                };
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 4000));
-        }
-        
-        return { status: false, msg: 'Error fetching the download link.' };
-
-    } catch (e) {
-        console.error(e);
-        return { status: false, msg: e.message };
-    }
-}
-
-// Command for downloading audio
 cmd({
-    pattern: "yta2",
+    pattern: "song",
     react: "🎵",
-    dontAddCommandList: true,
+    desc: "downlod song",
+    category: "downlod",
     filename: __filename
-}, async (conn, mek, m, { from, q, reply }) => {
-    try {
-        if (!q) return await reply('📥 Need a YouTube URL!');
+},
+async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
+try{
 
-        const prog = await dlyta(q, 'audio');
+if(!q) return reply("*❌Please give me url or titel*")
+const search = await yts(q)
+const deta = search.videos[0];
+const url = deta.url 
 
-        if (prog.status) {
-            await conn.sendMessage(from, { audio: { url: prog.dl_link }, mimetype: 'audio/mpeg' }, { quoted: mek });
-        } else {
-            await reply(`❌ Failed to process the request: ${prog.msg}`);
-        }
+let desc= `
+ *🎶THARU-𝗠𝗗   𝗔𝗨𝗗𝗜𝗢-𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥🎶*
+|__________________________
+| ℹ️ *title* : *${deta.title}*
+| 📋 *description* : *${deta.description}*
+| 🕘 *time* : *${deta.timestamp}*
+| 📌 *ago* : *${deta.ago}*
+| 📉 *views* : *${deta.views}*
+|__________________________
 
-    } catch (e) {
-        console.log('First attempt failed:', e);
+*©ᴘᴏᴡᴇʀᴅ ʙʏ ꜱᴇɴᴜʟ-ᴍᴅ*
 
-        try {
-            const prog = await dlyta(q, 'audio');
+`
 
-            if (prog.status) {
-                await conn.sendMessage(from, { audio: { url: prog.dl_link }, mimetype: 'audio/mpeg' }, { quoted: mek });
-            } else {
-                await reply(`❌ Failed to process the request: ${prog.msg}`);
-            }
-        } catch (error) {
-            console.log('Second attempt failed:', error);
-            await reply('🚫 Failed to process the request. Please try again later!');
-        }
-    }
-});
+await conn.sendMessage(from,{image :{ url: deta.thumbnail},caption:desc},{quoted:mek});
 
-// Command for downloading video
+//downlod audio+ document
+
+let down = await fg.yta(url)
+let downloadUrl = down.dl_url
+
+//send audio message 
+await conn.sendMessage(from,{audio:{url:downloadUrl},mimetype:"audio/mpeg",caption :"*©ᴘᴏᴡᴇʀᴇᴅ ʙʏ ꜱᴇɴᴜʟ-ᴍᴅ*"},{quoted:mek})
+await conn.sendMessage(from,{document:{url:downloadUrl},mimetype:"audio/mpeg",fileName:deta.title + ".mp3" ,caption :"*©ᴘᴏᴡᴇʀᴇᴅ*"},{quoted:mek})
+
+  
+
+}catch(e){
+console.log(e)
+reply(`${e}`)
+}
+})
+
+//========video dl=======
+
 cmd({
-    pattern: "ytv2",
+    pattern: "video",
     react: "🎥",
-    dontAddCommandList: true,
+    desc: "downlod video",
+    category: "downlod",
     filename: __filename
-}, async (conn, mek, m, { from, q, reply }) => {
-    try {
-        if (!q) return await reply('📥 Need a YouTube URL!');
+},
+async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
+try{
 
-        const prog = await dlyta(q, 'video');
+if(!q) return reply("❌Please give me url or title")
+const search = await yts(q)
+const deta = search.videos[0];
+const url = deta.url 
 
-        if (prog.status) {
-            await conn.sendMessage(from, { video: { url: prog.dl_link }, mimetype: 'video/mp4' }, { quoted: mek });
-        } else {
-            await reply(`❌ Failed to process the request: ${prog.msg}`);
-        }
+let desc= `
+*📽️THARU-𝗠𝗗   𝗩𝗜𝗗𝗘𝗢-𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥📽️*
+|__________________________
+| ℹ️ *title* : *${deta.title}*
+| 📋 *description* : *${deta.description}*
+| 🕘 *time* : *${deta.timestamp}*
+| 📌 *ago* : *${deta.ago}*
+| 📉 *views* : *${deta.views}*
+|__________________________
 
-    } catch (e) {
-        console.log('First attempt failed:', e);
+*©ᴘᴏᴡᴇʀᴅ ʙʏ ꜱᴇɴᴜʟ-ᴍᴅ*
 
-        try {
-            const prog = await dlyta(q, 'video');
+`
 
-            if (prog.status) {
-                await conn.sendMessage(from, { video: { url: prog.dl_link }, mimetype: 'video/mp4' }, { quoted: mek });
-            } else {
-                await reply(`❌ Failed to process the request: ${prog.msg}`);
-            }
-        } catch (error) {
-            console.log('Second attempt failed:', error);
-            await reply('🚫 Failed to process the request. Please try again later!');
-        }
-    }
-});
+await conn.sendMessage(from,{image :{ url: deta.thumbnail},caption:desc},{quoted:mek});
+
+//downlod video + document 
+
+let down = await fg.ytv(url)
+let downloadUrl = down.dl_url
+
+//send video  message 
+await conn.sendMessage(from,{video:{url:downloadUrl},mimetype:"video/mp4",caption :"*©ᴘᴏᴡᴇʀᴇᴅ ʙʏ ꜱᴇɴᴜʟ-ᴍᴅ*"},{quoted:mek})
+await conn.sendMessage(from,{document:{url:downloadUrl},mimetype:"video/mp4",fileName:deta.title + ".mp4",caption :"*©ᴘᴏᴡᴇʀᴇᴅ *"},{quoted:mek})
+
+  
+
+}catch(e){
+console.log(e)
+reply(`${e}`)
+}
+})
