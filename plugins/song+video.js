@@ -5,97 +5,83 @@ const yts = require('yt-search');
 // ====== SONG DOWNLOAD COMMAND ======
 cmd({
     pattern: "song",
-    react: "🎧",
-    desc: "Download song",
+    desc: "Download songs",
     category: "download",
     filename: __filename
-}, 
+},
 async (conn, mek, m, { from, quoted, q, reply }) => {
     try {
-        if (!q) return reply("_❌ Please provide a URL or title._");
+        if (!q) return reply("❌ _Please provide a URL or title!_");
         
         const search = await yts(q);
-        const song = search.videos[0];
-        const url = song.url;
+        const data = search.videos[0];
+        const url = data.url;
 
-        let description = `
-        *🎵 𝗠𝗨𝗦𝗜𝗖 𝐁𝐘 QUEEN_THARU_V➄ 🎵*
-        *➤ Title*: _${song.title}_
-        *➤ Views*: _${song.views}_
-        *➤ Duration*: _${song.timestamp}_
-        *➤ Uploaded*: _${song.ago}_
-        *© POWERED BY DIZER*
-        `;
+        let desc = `🎶 *DIZER SONG DOWNLOADER* 🎶
+        
+        *➤ Title*: _${data.title}_
+        *➤ Description*: _${data.description || 'N/A'}_
+        *➤ Duration*: _${data.timestamp}_
+        *➤ Uploaded*: _${data.ago}_
+        *➤ Views*: _${data.views}_
 
-        await conn.sendMessage(from, { image: { url: song.thumbnail }, caption: description }, { quoted: mek });
+        *🌟 POWERED BY DIZER 🌟*`;
 
-        // Download audio and send it as a document
-        const audioData = await fg.yta(url);
-        const audioUrl = audioData.dl_url;
+        // Send the song details and thumbnail
+        await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
 
-        await conn.sendMessage(from, {
-            audio: { url: audioUrl },
-            mimetype: "audio/mpeg",
-            caption: `> _*POWERED BY DIZER*_`
-        }, { quoted: mek });
+        // Download audio
+        let down = await fg.yta(url);
+        let downloadUrl = down.dl_url;
 
-        await conn.sendMessage(from, {
-            document: { url: audioUrl },
-            mimetype: "audio/mpeg",
-            fileName: `${song.title}.mp3`,
-            caption: `> _*POWERED BY DIZER*_`
-        }, { quoted: mek });
+        // Send audio + document message
+        await conn.sendMessage(from, { audio: { url: downloadUrl }, mimetype: "audio/mpeg", caption: `> _*POWERED BY DIZER*_ 🎧` }, { quoted: mek });
+        await conn.sendMessage(from, { document: { url: downloadUrl }, mimetype: "audio/mpeg", fileName: `${data.title}.mp3`, caption: `🎵 _*DIZER AUDIO DOWNLOAD...*_` }, { quoted: mek });
+
     } catch (e) {
         console.error(e);
-        reply(`_❌ Error: ${e.message}_`);
+        reply(`❌ Error: ${e.message}`);
     }
 });
 
 // ====== VIDEO DOWNLOAD COMMAND ======
 cmd({
     pattern: "video",
-    react: "🎬",
-    desc: "Download video",
+    desc: "Download videos",
     category: "download",
     filename: __filename
 },
 async (conn, mek, m, { from, quoted, q, reply }) => {
     try {
-        if (!q) return reply("_❌ Please provide a URL or title._");
+        if (!q) return reply("❌ _Please provide a URL or title!_");
 
         const search = await yts(q);
-        const video = search.videos[0];
-        const url = video.url;
+        const data = search.videos[0];
+        const url = data.url;
 
-        let description = `
-        *🎬 QUEEN_THARU_V➄ VIDEO DOWNLOADER 🎬*
-        *➤ Title*: _${video.title}_
-        *➤ Views*: _${video.views}_
-        *➤ Duration*: _${video.timestamp}_
-        *➤ Uploaded*: _${video.ago}_
-        *© POWERED BY DIZER*
-        `;
+        let desc = `🎬 *DIZER VIDEO DOWNLOADER* 🎬
+        
+        *➤ Title*: _${data.title}_
+        *➤ Description*: _${data.description || 'N/A'}_
+        *➤ Duration*: _${data.timestamp}_
+        *➤ Uploaded*: _${data.ago}_
+        *➤ Views*: _${data.views}_
 
-        await conn.sendMessage(from, { image: { url: video.thumbnail }, caption: description }, { quoted: mek });
+        *🌟 POWERED BY DIZER 🌟*`;
 
-        // Download video and send it as a document
-        const videoData = await fg.ytv(url);
-        const videoUrl = videoData.dl_url;
+        // Send the video details and thumbnail
+        await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
 
-        await conn.sendMessage(from, {
-            video: { url: videoUrl },
-            mimetype: "video/mp4",
-            caption: `> _*POWERED BY DIZER*_`
-        }, { quoted: mek });
+        // Download video
+        let down = await fg.ytv(url);
+        let downloadUrl = down.dl_url;
 
-        await conn.sendMessage(from, {
-            document: { url: videoUrl },
-            mimetype: "video/mp4",
-            fileName: `${video.title}.mp4`,
-            caption: `> _*POWERED BY DIZER*_`
-        }, { quoted: mek });
+        // Send video + document message
+        await conn.sendMessage(from, { video: { url: downloadUrl }, mimetype: "video/mp4", caption: `> _*POWERED BY DIZER*_ 🎥` }, { quoted: mek });
+        await conn.sendMessage(from, { document: { url: downloadUrl }, mimetype: "video/mp4", fileName: `${data.title}.mp4`, caption: `🎬 _*DIZER VIDEO DOWNLOAD...*_` }, { quoted: mek });
+
     } catch (e) {
         console.error(e);
-        reply(`_❌ Error: ${e.message}_`);
+        reply(`❌ Error: ${e.message}`);
     }
 });
