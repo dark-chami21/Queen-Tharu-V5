@@ -1,5 +1,5 @@
 const { cmd, commands } = require('../command');
-const fg = require('api-dylux');
+const ytdl = require('ytdl-core');
 const yts = require('yt-search');
 
 // ====== SONG DOWNLOAD COMMAND ======
@@ -30,13 +30,12 @@ async (conn, mek, m, { from, quoted, q, reply }) => {
         // Send the song details and thumbnail
         await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
 
-        // Download audio
-        let down = await fg.yta(url);
-        let downloadUrl = down.dl_url;
+        // Download audio using ytdl-core
+        const stream = ytdl(url, { filter: 'audioonly' });
 
         // Send audio + document message
-        await conn.sendMessage(from, { audio: { url: downloadUrl }, mimetype: "audio/mpeg", caption: `> _*POWERED BY DIZER*_ 🎧` }, { quoted: mek });
-        await conn.sendMessage(from, { document: { url: downloadUrl }, mimetype: "audio/mpeg", fileName: `${data.title}.mp3`, caption: `🎵 _*DIZER AUDIO DOWNLOAD...*_` }, { quoted: mek });
+        await conn.sendMessage(from, { audio: { url: stream }, mimetype: "audio/mpeg", caption: `> _*POWERED BY DIZER*_ 🎧` }, { quoted: mek });
+        await conn.sendMessage(from, { document: { url: stream }, mimetype: "audio/mpeg", fileName: `${data.title}.mp3`, caption: `🎵 _*DIZER AUDIO DOWNLOAD...*_` }, { quoted: mek });
 
     } catch (e) {
         console.error(e);
@@ -72,13 +71,12 @@ async (conn, mek, m, { from, quoted, q, reply }) => {
         // Send the video details and thumbnail
         await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
 
-        // Download video
-        let down = await fg.ytv(url);
-        let downloadUrl = down.dl_url;
+        // Download video using ytdl-core
+        const stream = ytdl(url);
 
         // Send video + document message
-        await conn.sendMessage(from, { video: { url: downloadUrl }, mimetype: "video/mp4", caption: `> _*POWERED BY DIZER*_ 🎥` }, { quoted: mek });
-        await conn.sendMessage(from, { document: { url: downloadUrl }, mimetype: "video/mp4", fileName: `${data.title}.mp4`, caption: `🎬 _*DIZER VIDEO DOWNLOAD...*_` }, { quoted: mek });
+        await conn.sendMessage(from, { video: { url: stream }, mimetype: "video/mp4", caption: `> _*POWERED BY DIZER*_ 🎥` }, { quoted: mek });
+        await conn.sendMessage(from, { document: { url: stream }, mimetype: "video/mp4", fileName: `${data.title}.mp4`, caption: `🎬 _*DIZER VIDEO DOWNLOAD...*_` }, { quoted: mek });
 
     } catch (e) {
         console.error(e);
