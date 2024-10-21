@@ -1,99 +1,101 @@
-const {cmd , commands} = require('../command')
-const fg = require('api-dylux')
-const yts = require('yt-search')
+const { cmd, commands } = require('../command');
+const fg = require('api-dylux');
+const yts = require('yt-search');
 
+// ====== SONG DOWNLOAD COMMAND ======
 cmd({
     pattern: "song",
     react: "🎧",
-    desc: "downlod song",
-    category: "downlod",
+    desc: "Download song",
+    category: "download",
     filename: __filename
-},
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
+}, 
+async (conn, mek, m, { from, quoted, q, reply }) => {
+    try {
+        if (!q) return reply("_❌ Please provide a URL or title._");
+        
+        const search = await yts(q);
+        const song = search.videos[0];
+        const url = song.url;
 
-if(!q) return reply("*❌Please give me url or title*")
-const search = await yts(q)
-const deta = search.videos[0];
-const url = deta.url 
+        let description = `
+        *🎵 𝗠𝗨𝗦𝗜𝗖 𝐁𝐘 QUEEN_THARU_V➄ 🎵*
+        *➤ Title*: _${song.title}_
+        *➤ Views*: _${song.views}_
+        *➤ Duration*: _${song.timestamp}_
+        *➤ Uploaded*: _${song.ago}_
+        *© POWERED BY DIZER*
+        `;
 
-let desc= `
- *©𝗠𝗨𝗦𝗜𝗖 𝐁𝐘 QUEEN_THARU_V➄*
+        await conn.sendMessage(from, { image: { url: song.thumbnail }, caption: description }, { quoted: mek });
 
-> ➤ *title* : ${deta.title}
+        // Download audio and send it as a document
+        const audioData = await fg.yta(url);
+        const audioUrl = audioData.dl_url;
 
-> ➤ *views* : ${deta.views}
+        await conn.sendMessage(from, {
+            audio: { url: audioUrl },
+            mimetype: "audio/mpeg",
+            caption: `> _*POWERED BY DIZER*_`
+        }, { quoted: mek });
 
-> ➤ *time* : ${deta.timestamp}
+        await conn.sendMessage(from, {
+            document: { url: audioUrl },
+            mimetype: "audio/mpeg",
+            fileName: `${song.title}.mp3`,
+            caption: `> _*POWERED BY DIZER*_`
+        }, { quoted: mek });
+    } catch (e) {
+        console.error(e);
+        reply(`_❌ Error: ${e.message}_`);
+    }
+});
 
-> ➤ *ago* : ${deta.ago}
-
-> *©𝐏𝐎𝐖𝐄𝐑𝐄𝐃 𝐁𝐘 CHAMINDU*`
-
-await conn.sendMessage(from,{image :{ url: deta.thumbnail},caption:desc},{quoted:mek});
-
-//downlod audio+ document
-
-let down = await fg.yta(url)
-let downloadUrl = down.dl_url
-
-//send audio message 
-await conn.sendMessage(from,{audio:{url:downloadUrl},mimetype:"audio/mpeg",caption :"> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ 𝚆𝙰𝚃𝚂𝙾𝙽 xᴅ*"},{quoted:mek})
-await conn.sendMessage(from,{document:{url:downloadUrl},mimetype:"audio/mpeg",fileName:deta.title + ".mp3" ,caption :"> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ 𝚆𝙰𝚃𝚂𝙾𝙽 xᴅ*"},{quoted:mek})
-
-  
-
-}catch(e){
-console.log(e)
-reply(`${e}`)
-}
-})
-
-//========video dl=======
-
+// ====== VIDEO DOWNLOAD COMMAND ======
 cmd({
     pattern: "video",
     react: "🎬",
-    desc: "downlod video",
-    category: "downlod",
+    desc: "Download video",
+    category: "download",
     filename: __filename
 },
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
+async (conn, mek, m, { from, quoted, q, reply }) => {
+    try {
+        if (!q) return reply("_❌ Please provide a URL or title._");
 
-if(!q) return reply("❌Please give me url or title")
-const search = await yts(q)
-const deta = search.videos[0];
-const url = deta.url 
+        const search = await yts(q);
+        const video = search.videos[0];
+        const url = video.url;
 
-let desc= `
-QUEEN_THARU_V➄ 𝗩𝗜𝗗𝗘𝗢 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗𝗘𝗥
+        let description = `
+        *🎬 QUEEN_THARU_V➄ VIDEO DOWNLOADER 🎬*
+        *➤ Title*: _${video.title}_
+        *➤ Views*: _${video.views}_
+        *➤ Duration*: _${video.timestamp}_
+        *➤ Uploaded*: _${video.ago}_
+        *© POWERED BY DIZER*
+        `;
 
-> ➤ *title* : ${deta.title}
+        await conn.sendMessage(from, { image: { url: video.thumbnail }, caption: description }, { quoted: mek });
 
-> ➤ *views* : ${deta.views}
+        // Download video and send it as a document
+        const videoData = await fg.ytv(url);
+        const videoUrl = videoData.dl_url;
 
-> ➤ *time* : ${deta.timestamp}
+        await conn.sendMessage(from, {
+            video: { url: videoUrl },
+            mimetype: "video/mp4",
+            caption: `> _*POWERED BY DIZER*_`
+        }, { quoted: mek });
 
-> ➤ *ago* : ${deta.ago}
-
- ©𝐏𝐎𝐖𝐄𝐑𝐄𝐃 𝐁𝐘 CHAMINDU `
-
-await conn.sendMessage(from,{image :{ url: deta.thumbnail},caption:desc},{quoted:mek});
-
-//downlod video + document 
-
-let down = await fg.ytv(url)
-let downloadUrl = down.dl_url
-
-//send video  message 
-await conn.sendMessage(from,{video:{url:downloadUrl},mimetype:"video/mp4",caption :"> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ 𝚆𝙰𝚃𝚂𝙾𝙽 xᴅ*"},{quoted:mek})
-await conn.sendMessage(from,{document:{url:downloadUrl},mimetype:"video/mp4",fileName:deta.title + ".mp4",caption :"> *ᴘᴏᴡᴇʀᴇᴅ ʙʏ 𝚆𝙰𝚃𝚂𝙾𝙽 xᴅ*"},{quoted:mek})
-
-  
-
-}catch(e){
-console.log(e)
-reply(`${e}`)
-}
-})
+        await conn.sendMessage(from, {
+            document: { url: videoUrl },
+            mimetype: "video/mp4",
+            fileName: `${video.title}.mp4`,
+            caption: `> _*POWERED BY DIZER*_`
+        }, { quoted: mek });
+    } catch (e) {
+        console.error(e);
+        reply(`_❌ Error: ${e.message}_`);
+    }
+});
