@@ -1,89 +1,118 @@
-const { cmd, commands } = require('../command');
-const ytdl = require('ytdl-core');
-const yts = require('yt-search');
+const config = require('../config')
+const fetch = require('node-fetch')
+const {
+    getBuffer,
+    getGroupAdmins,
+    getRandom,
+    getsize,
+    h2k,
+    isUrl,
+    Json,
+    runtime,
+    sleep,
+    fetchJson
+} = require('../lib/functions')
+const {
+    cmd,
+    commands
+} = require('../command')
 
-// ====== SONG DOWNLOAD COMMAND ======
-cmd({
-    pattern: "song",
-    desc: "Download songs",
-    category: "download",
-    filename: __filename
-},
-async (conn, mek, m, { from, quoted, q, reply }) => {
+let foot = config.FOOTER
+
+async function dlyta(url, type) {
     try {
-        if (!q) return reply("❌ _Please provide a URL or title!_");
+        const maxAttempts = 10;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            const response = await fetch(`https://api-pink-venom.vercel.app/api/ytdl?url=${url}&type=${type}`);
+            const result = await response.json();
+
+            if (result.result.download_url) {
+                return {
+                    status: true,
+                    dl_link: result.result.download_url
+                };
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 4000));
+        }
         
-        const search = await yts(q);
-        const data = search.videos[0];
-        const url = data.url;
-
-        let desc = `🎶 *DIZER SONG DOWNLOADER* 🎶
-        
-        *➤ Title*: _${data.title}_
-        *➤ Description*: _${data.description || 'N/A'}_
-        *➤ Duration*: _${data.timestamp}_
-        *➤ Uploaded*: _${data.ago}_
-        *➤ Views*: _${data.views}_
-
-        *🌟 POWERED BY DIZER 🌟*`;
-
-        // Send the song details and thumbnail
-        await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
-
-        // Download audio using ytdl-core
-        const audioStream = ytdl(url, { filter: 'audioonly' });
-
-        // Send audio message
-        await conn.sendMessage(from, { audio: { url: audioStream }, mimetype: "audio/mpeg", caption: `> _*POWERED BY DIZER*_ 🎧` }, { quoted: mek });
-
-        // Send document message with the audio
-        await conn.sendMessage(from, { document: audioStream, mimetype: "audio/mpeg", fileName: `${data.title}.mp3`, caption: `🎵 _*DIZER AUDIO DOWNLOAD...*_` }, { quoted: mek });
+        return { status: false, msg: 'Error fetching the download link.' };
 
     } catch (e) {
         console.error(e);
-        reply(`❌ Error: ${e.message}`);
+        return { status: false, msg: e.message };
+    }
+}
+
+// Command for downloading audio
+cmd({
+    pattern: "yta2",
+    react: "🎵",
+    dontAddCommandList: true,
+    filename: __filename
+}, async (conn, mek, m, { from, q, reply }) => {
+    try {
+        if (!q) return await reply('📥 Need a YouTube URL!');
+
+        const prog = await dlyta(q, 'audio');
+
+        if (prog.status) {
+            await conn.sendMessage(from, { audio: { url: prog.dl_link }, mimetype: 'audio/mpeg' }, { quoted: mek });
+        } else {
+            await reply(`❌ Failed to process the request: ${prog.msg}`);
+        }
+
+    } catch (e) {
+        console.log('First attempt failed:', e);
+
+        try {
+            const prog = await dlyta(q, 'audio');
+
+            if (prog.status) {
+                await conn.sendMessage(from, { audio: { url: prog.dl_link }, mimetype: 'audio/mpeg' }, { quoted: mek });
+            } else {
+                await reply(`❌ Failed to process the request: ${prog.msg}`);
+            }
+        } catch (error) {
+            console.log('Second attempt failed:', error);
+            await reply('🚫 Failed to process the request. Please try again later!');
+        }
     }
 });
 
-// ====== VIDEO DOWNLOAD COMMAND ======
+// Command for downloading video
 cmd({
-    pattern: "video",
-    desc: "Download videos",
-    category: "download",
+    pattern: "ytv2",
+    react: "🎥",
+    dontAddCommandList: true,
     filename: __filename
-},
-async (conn, mek, m, { from, quoted, q, reply }) => {
+}, async (conn, mek, m, { from, q, reply }) => {
     try {
-        if (!q) return reply("❌ _Please provide a URL or title!_");
+        if (!q) return await reply('📥 Need a YouTube URL!');
 
-        const search = await yts(q);
-        const data = search.videos[0];
-        const url = data.url;
+        const prog = await dlyta(q, 'video');
 
-        let desc = `🎬 *DIZER VIDEO DOWNLOADER* 🎬
-        
-        *➤ Title*: _${data.title}_
-        *➤ Description*: _${data.description || 'N/A'}_
-        *➤ Duration*: _${data.timestamp}_
-        *➤ Uploaded*: _${data.ago}_
-        *➤ Views*: _${data.views}_
-
-        *🌟 POWERED BY DIZER 🌟*`;
-
-        // Send the video details and thumbnail
-        await conn.sendMessage(from, { image: { url: data.thumbnail }, caption: desc }, { quoted: mek });
-
-        // Download video using ytdl-core
-        const videoStream = ytdl(url);
-
-        // Send video message
-        await conn.sendMessage(from, { video: videoStream, mimetype: "video/mp4", caption: `> _*POWERED BY DIZER*_ 🎥` }, { quoted: mek });
-
-        // Send document message with the video
-        await conn.sendMessage(from, { document: videoStream, mimetype: "video/mp4", fileName: `${data.title}.mp4`, caption: `🎬 _*DIZER VIDEO DOWNLOAD...*_` }, { quoted: mek });
+        if (prog.status) {
+            await conn.sendMessage(from, { video: { url: prog.dl_link }, mimetype: 'video/mp4' }, { quoted: mek });
+        } else {
+            await reply(`❌ Failed to process the request: ${prog.msg}`);
+        }
 
     } catch (e) {
-        console.error(e);
-        reply(`❌ Error: ${e.message}`);
+        console.log('First attempt failed:', e);
+
+        try {
+            const prog = await dlyta(q, 'video');
+
+            if (prog.status) {
+                await conn.sendMessage(from, { video: { url: prog.dl_link }, mimetype: 'video/mp4' }, { quoted: mek });
+            } else {
+                await reply(`❌ Failed to process the request: ${prog.msg}`);
+            }
+        } catch (error) {
+            console.log('Second attempt failed:', error);
+            await reply('🚫 Failed to process the request. Please try again later!');
+        }
     }
 });
